@@ -12,10 +12,10 @@ BITS  64
 %define OVMF_SEV_METADATA_VERSION     1
 
 ; The section must be accepted or validated by the VMM before the boot
-%define OVMF_SECTION_TYPE_SNP_SEC_MEM     0x1
+%define OVMF_SECTION_TYPE_SNP_SEC_MEM       0x1
 
 ; AMD SEV-SNP specific sections
-%define OVMF_SECTION_TYPE_SNP_SECRETS     0x2
+%define OVMF_SECTION_TYPE_SNP_SECRETS       0x2
 
 ;
 ; The section contains the hypervisor pre-populated CPUID values.
@@ -24,13 +24,16 @@ BITS  64
 ; The CPUID format is documented in SEV-SNP firmware spec 0.9 section 7.1
 ; (CPUID function structure).
 ;
-%define OVMF_SECTION_TYPE_CPUID           0x3
+%define OVMF_SECTION_TYPE_CPUID             0x3
 
 ; The SVSM Calling Area Address (CAA)
-%define OVMF_SECTION_TYPE_SVSM_CAA        0x4
+%define OVMF_SECTION_TYPE_SVSM_CAA          0x4
+
+; AMD SEV-SNP IGVM Memory Map section
+%define OVMF_SECTION_TYPE_SNP_IGVM_MEM_MAP  0x5
 
 ; Kernel hashes section for measured direct boot
-%define OVMF_SECTION_TYPE_KERNEL_HASHES   0x10
+%define OVMF_SECTION_TYPE_KERNEL_HASHES     0x10
 
 ALIGN 16
 
@@ -81,6 +84,12 @@ PreValidate3:
   DD  SNP_SEC_MEM_BASE_DESC_3
   DD  SNP_SEC_MEM_SIZE_DESC_3
   DD  OVMF_SECTION_TYPE_SNP_SEC_MEM
+
+; SEV-SNP IGVM Memory Map page
+SevSnpIgvmMemoryMap:
+  DD  SEV_SNP_IGVM_MEMORY_MAP_BASE
+  DD  SEV_SNP_IGVM_MEMORY_MAP_SIZE
+  DD  OVMF_SECTION_TYPE_SNP_IGVM_MEM_MAP
 
 %if (SEV_SNP_KERNEL_HASHES_BASE > 0)
 ; Kernel hashes for measured direct boot, or zero page if

@@ -71,6 +71,8 @@
 %define CPUID_SIZE                    (FixedPcdGet32 (PcdOvmfCpuidSize))
 %define SVSM_CAA_BASE                 (FixedPcdGet32 (PcdOvmfSecSvsmCaaBase))
 %define SVSM_CAA_SIZE                 (FixedPcdGet32 (PcdOvmfSecSvsmCaaSize))
+%define SEV_SNP_IGVM_MEMORY_MAP_BASE  (FixedPcdGet32 (PcdSnpIgvmMemoryMapBase))
+%define SEV_SNP_IGVM_MEMORY_MAP_SIZE  (FixedPcdGet32 (PcdSnpIgvmMemoryMapSize))
 %if (FixedPcdGet32 (PcdSevLaunchSecretBase) > 0)
   ; There's a reserved page for SEV secrets and hashes; the VMM will fill and
   ; validate the page, or mark it as a zero page.
@@ -91,7 +93,7 @@
 ;
 %define SNP_SEC_MEM_BASE_DESC_2       (GHCB_BASE + 0x1000)
 %define SNP_SEC_MEM_SIZE_DESC_2       (SEV_SNP_SECRETS_BASE - SNP_SEC_MEM_BASE_DESC_2)
-%define SNP_SEC_MEM_BASE_DESC_3       (SVSM_CAA_BASE + SVSM_CAA_SIZE + SEV_SNP_KERNEL_HASHES_SIZE)
+%define SNP_SEC_MEM_BASE_DESC_3       (SVSM_CAA_BASE + SVSM_CAA_SIZE + SEV_SNP_IGVM_MEMORY_MAP_SIZE + SEV_SNP_KERNEL_HASHES_SIZE)
 %define SNP_SEC_MEM_SIZE_DESC_3       (FixedPcdGet32 (PcdOvmfPeiMemFvBase) - SNP_SEC_MEM_BASE_DESC_3)
 
 %ifdef ARCH_X64

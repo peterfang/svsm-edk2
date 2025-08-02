@@ -41,6 +41,8 @@
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfSecGhcbPageTableSize
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfSecPageTablesBase
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfSecPageTablesSize
+  gUefiOvmfPkgTokenSpaceGuid.PcdSnpIgvmMemoryMapBase
+  gUefiOvmfPkgTokenSpaceGuid.PcdSnpIgvmMemoryMapSize
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfSecPeiTempRamBase
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfSecPeiTempRamSize
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfWorkAreaBase
