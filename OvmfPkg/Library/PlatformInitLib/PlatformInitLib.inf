@@ -95,6 +95,8 @@
 
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfSecGhcbBase
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfSecGhcbSize
+  gUefiOvmfPkgTokenSpaceGuid.PcdSnpIgvmMemoryMapBase
+  gUefiOvmfPkgTokenSpaceGuid.PcdSnpIgvmMemoryMapSize
   gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize
   gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize
   gUefiCpuPkgTokenSpaceGuid.PcdCpuLocalApicBaseAddress

@@ -137,6 +137,57 @@ PlatformScanE820Tdx (
   return EFI_SUCCESS;
 }
 
+STATIC
+EFI_STATUS
+PlatformScanE820Igvm (
+  IN      E820_SCAN_CALLBACK     Callback,
+  IN OUT  EFI_HOB_PLATFORM_INFO  *PlatformInfoHob
+  )
+{
+  EFI_E820_ENTRY64      E820Entry;
+  UINT64                MaxEntries;
+  UINT64                Index = 0, NextPfn = 0;
+  struct IGVM_VHS_MEMORY_MAP_ENTRY {
+    UINT64    StartPfn;
+    UINT64    NumPages;
+    UINT16    Type;
+    UINT16    Flags;
+    UINT32    Reserved;
+  }                     *Entry;
+
+#define ENTRY_TYPE_MEMORY   0
+#define ENTRY_TYPE_RESERVED 1
+
+  Entry = (VOID *)(UINTN)FixedPcdGet32 (PcdSnpIgvmMemoryMapBase);
+  MaxEntries = (UINT64)FixedPcdGet32 (PcdSnpIgvmMemoryMapSize) / sizeof(*Entry);
+
+  if (!MaxEntries || !Entry || !Entry->NumPages) {
+    return EFI_ABORTED;
+  }
+
+  do {
+    if (Entry->StartPfn < NextPfn) {
+      return EFI_ABORTED;
+    }
+
+    NextPfn = Entry->StartPfn + Entry->NumPages;
+
+    if (Entry->Type == ENTRY_TYPE_MEMORY) {
+        E820Entry.BaseAddr = Entry->StartPfn << EFI_PAGE_SHIFT;
+        E820Entry.Length   = Entry->NumPages << EFI_PAGE_SHIFT;
+        E820Entry.Type     = EfiAcpiAddressRangeMemory;
+        Callback (&E820Entry, PlatformInfoHob);
+    } else if (Entry->Type == ENTRY_TYPE_RESERVED) {
+        E820Entry.BaseAddr = Entry->StartPfn << EFI_PAGE_SHIFT;
+        E820Entry.Length   = Entry->NumPages << EFI_PAGE_SHIFT;
+        E820Entry.Type     = EfiAcpiAddressRangeReserved;
+        Callback (&E820Entry, PlatformInfoHob);
+    }
+  } while (++Index < MaxEntries && (++Entry)->NumPages);
+
+  return EFI_SUCCESS;
+}
+
 /**
   Store first address not used by e820 RAM entries in
   PlatformInfoHob->FirstNonAddress
@@ -379,6 +430,11 @@ PlatformScanE820 (
 
   if (TdIsEnabled ()) {
     return PlatformScanE820Tdx (Callback, PlatformInfoHob);
+  }
+
+  if (MemEncryptSevSnpIsEnabled () &&
+      PlatformScanE820Igvm (Callback, PlatformInfoHob) == EFI_SUCCESS) {
+    return EFI_SUCCESS;
   }
 
   Status = QemuFwCfgFindFile ("etc/e820", &FwCfgItem, &FwCfgSize);
