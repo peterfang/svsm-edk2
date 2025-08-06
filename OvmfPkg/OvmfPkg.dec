@@ -294,6 +294,11 @@
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfSecApicPageTableBase|0x0|UINT32|0x72
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfSecApicPageTableSize|0x0|UINT32|0x73
 
+  ## The base address and size of the SEV-SNP IGVM Memory Map area.
+  #  The value should be a multiple of 4KB for each.
+  gUefiOvmfPkgTokenSpaceGuid.PcdSnpIgvmMemoryMapBase|0x0|UINT32|0x78
+  gUefiOvmfPkgTokenSpaceGuid.PcdSnpIgvmMemoryMapSize|0x0|UINT32|0x79
+
   ## The base address and size of the SEV Launch Secret Area provisioned
   #  after remote attestation.  If this is set in the .fdf, the platform
   #  is responsible for protecting the area from DXE phase overwrites.
