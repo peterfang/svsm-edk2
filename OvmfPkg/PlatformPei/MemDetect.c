@@ -310,6 +310,7 @@ PublishPeiMemory (
   UINT32                S3AcpiReservedMemoryBase;
   UINT32                S3AcpiReservedMemorySize;
 
+  DEBUG ((DEBUG_INFO, "Entering %a\n", __func__));
   PlatformGetSystemMemorySizeBelow4gb (PlatformInfoHob);
   LowerMemorySize = PlatformInfoHob->LowMemory;
   if (PlatformInfoHob->SmmSmramRequire) {
@@ -393,6 +394,7 @@ PublishPeiMemory (
   //
   Status = PublishSystemMemory (MemoryBase, MemorySize);
   ASSERT_EFI_ERROR (Status);
+  DEBUG ((DEBUG_INFO, "Exiting %a\n", __func__));
 
   return Status;
 }

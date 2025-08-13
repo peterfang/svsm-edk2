@@ -160,18 +160,23 @@ PlatformScanE820Igvm (
 
   Entry = (VOID *)(UINTN)FixedPcdGet32 (PcdSnpIgvmMemoryMapBase);
   MaxEntries = (UINT64)FixedPcdGet32 (PcdSnpIgvmMemoryMapSize) / sizeof(*Entry);
+  DEBUG ((DEBUG_INFO, "Entering %a\n", __func__));
 
   if (!MaxEntries || !Entry || !Entry->NumPages) {
+    DEBUG ((DEBUG_INFO, "Exiting %a: no entries\n", __func__));
     return EFI_ABORTED;
   }
 
   do {
     if (Entry->StartPfn < NextPfn) {
+      DEBUG ((DEBUG_INFO, "Exiting %a: bad StartPfn 0x%lx\n", __func__, Entry->StartPfn));
       return EFI_ABORTED;
     }
 
     NextPfn = Entry->StartPfn + Entry->NumPages;
 
+    DEBUG ((DEBUG_INFO, "%a: entry 0x%lx 0x%lx 0x%u\n", __func__,
+           Entry->StartPfn, Entry->NumPages, E820Entry.Type));
     if (Entry->Type == ENTRY_TYPE_MEMORY) {
         E820Entry.BaseAddr = Entry->StartPfn << EFI_PAGE_SHIFT;
         E820Entry.Length   = Entry->NumPages << EFI_PAGE_SHIFT;
@@ -185,6 +190,7 @@ PlatformScanE820Igvm (
     }
   } while (++Index < MaxEntries && (++Entry)->NumPages);
 
+  DEBUG ((DEBUG_INFO, "Exiting %a: found %lu entries\n", __func__, Index));
   return EFI_SUCCESS;
 }
 
@@ -424,6 +430,7 @@ PlatformScanE820 (
   EFI_E820_ENTRY64      E820Entry;
   UINTN                 Processed;
 
+  DEBUG ((DEBUG_INFO, "Entering %a\n", __func__));
   if (PlatformInfoHob->HostBridgeDevId == CLOUDHV_DEVICE_ID) {
     return PlatformScanE820Pvh (Callback, PlatformInfoHob);
   }
@@ -434,6 +441,7 @@ PlatformScanE820 (
 
   if (MemEncryptSevSnpIsEnabled () &&
       PlatformScanE820Igvm (Callback, PlatformInfoHob) == EFI_SUCCESS) {
+    DEBUG ((DEBUG_INFO, "PlatformScanE820Igvm was successful\n"));
     return EFI_SUCCESS;
   }
 
@@ -452,6 +460,7 @@ PlatformScanE820 (
     Callback (&E820Entry, PlatformInfoHob);
   }
 
+  DEBUG ((DEBUG_INFO, "Exiting %a with fwcfg info\n", __func__));
   return EFI_SUCCESS;
 }
 
