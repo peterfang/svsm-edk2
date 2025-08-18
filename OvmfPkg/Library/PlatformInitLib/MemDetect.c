@@ -164,14 +164,12 @@ PlatformScanE820Igvm (
 
   if (!MaxEntries || !Entry || !Entry->NumPages) {
     DEBUG ((DEBUG_INFO, "Exiting %a: no entries\n", __func__));
-    while (1) {}
     return EFI_ABORTED;
   }
 
   do {
     if (Entry->StartPfn < NextPfn) {
       DEBUG ((DEBUG_INFO, "Exiting %a: bad StartPfn 0x%lx\n", __func__, Entry->StartPfn));
-      while (1) {}
       return EFI_ABORTED;
     }
 
@@ -193,7 +191,6 @@ PlatformScanE820Igvm (
   } while (++Index < MaxEntries && (++Entry)->NumPages);
 
   DEBUG ((DEBUG_INFO, "Exiting %a: found %lu entries\n", __func__, Index));
-  while (1) {}
   return EFI_SUCCESS;
 }
 
